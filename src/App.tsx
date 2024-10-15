@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import { FC, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 
 import { getTodos } from './api/todos';
 
@@ -23,17 +23,17 @@ export const App: FC = () => {
     setErrorMessage(null);
   };
 
-  const handleError = (error: Errors) => {
+  const handleError = useCallback((error: Errors) => {
     setErrorMessage(error);
 
     setTimeout(handleRemoveError, 3000);
-  };
+  }, []);
 
   useEffect(() => {
     getTodos()
       .then(setTodos)
       .catch(() => handleError(Errors.LOAD_ERROR));
-  }, []);
+  }, [handleError]);
 
   return (
     <div className="todoapp">
