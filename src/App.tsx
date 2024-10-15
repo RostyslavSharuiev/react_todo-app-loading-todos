@@ -2,12 +2,10 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import { FC, useEffect, useState } from 'react';
 
-import { getTodos, USER_ID } from './api/todos';
+import { getTodos } from './api/todos';
 
 import { Todo } from './types/Todo';
 import { Errors } from './types/Errors';
-
-import { UserWarning } from './UserWarning';
 
 import { Header, TodoList, Footer, ErrorMessage } from './components';
 import { FilterBy } from './types/FilterBy';
@@ -21,19 +19,21 @@ export const App: FC = () => {
 
   const filteredTodos = filterTodos(todos, selectedFilter);
 
-  const handleCloseErrorButton = () => {
+  const handleRemoveError = () => {
     setErrorMessage(null);
+  };
+
+  const handleError = (error: Errors) => {
+    setErrorMessage(error);
+
+    setTimeout(handleRemoveError, 3000);
   };
 
   useEffect(() => {
     getTodos()
       .then(setTodos)
-      .catch(() => setErrorMessage(Errors.LOAD_ERROR));
+      .catch(() => handleError(Errors.LOAD_ERROR));
   }, []);
-
-  if (!USER_ID) {
-    return <UserWarning />;
-  }
 
   return (
     <div className="todoapp">
@@ -44,7 +44,6 @@ export const App: FC = () => {
 
         <TodoList todos={filteredTodos} />
 
-        {/* Hide the footer if there are no todos */}
         {!!todos.length && (
           <Footer
             selectedFilter={selectedFilter}
@@ -54,11 +53,9 @@ export const App: FC = () => {
         )}
       </div>
 
-      {/* DON'T use conditional rendering to hide the notification */}
-      {/* Add the 'hidden' class to hide the message smoothly */}
       <ErrorMessage
         errorMessage={errorMessage}
-        onHideErrors={handleCloseErrorButton}
+        onClearError={handleRemoveError}
       />
     </div>
   );

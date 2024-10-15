@@ -5,10 +5,10 @@ import { Errors } from '../../types/Errors';
 
 interface Props {
   errorMessage: Errors | null;
-  onHideErrors: () => void;
+  onClearError: () => void;
 }
 
-export const ErrorMessage: FC<Props> = ({ errorMessage, onHideErrors }) => {
+export const ErrorMessage: FC<Props> = ({ errorMessage, onClearError }) => {
   return (
     <div
       data-cy="ErrorNotification"
@@ -20,7 +20,7 @@ export const ErrorMessage: FC<Props> = ({ errorMessage, onHideErrors }) => {
         data-cy="HideErrorButton"
         type="button"
         className="delete"
-        onClick={onHideErrors}
+        onClick={onClearError}
       />
       {errorMessage}
     </div>
